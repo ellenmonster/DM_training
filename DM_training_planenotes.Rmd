@@ -1,0 +1,163 @@
+---
+title: "DM_training"
+output: html_document
+date: "2023-10-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### As people are entering, direct them to download the park_visits.csv from DM Training page and save it to their computer. Then open RStudio. 
+
+## Class logistics ---
+  - Trainers introduce themselves very briefly
+  - We are assuming you have never or barely used R before
+  - If you get lost, have questions, etc., raise your hand and a floating trainer will come to help you
+  - If you can't see what I'm typing or if you need me to repeat something, just shout out. Or if you have are wanting clarification on something I say, go ahead and just shout it out.
+  - Everything we go over in class will be provided in detailed class notes that will be available for you to download from the DM Training website within the next few days. If you want to continue learning R after this class I strongly suggest you work through the R training materials from our Scientists' Training earlier this year [** SHOW]. We did 20 hours of Introductory R for that training, and everything is available at this website. I'll include the URL on the class notes.
+  - Today, our preference is for you to code along with us during the next hour plus. I'll be typing code up here at a pace that will allow you to type along on your computer so you can make sure you're getting the expected outputs from R. 
+  - Sometimes I'll show you how to do something and then I'll ask you to figure out how to do something similar on your own. For example, I might show you how to calculate the mean of a sequence of numbers, then ask then ask you to take a few minutes to figure out--with the help of the Internet--how to calculate the standard deviation of that sequence of numbers. One of the most important things you can walk away with from this short intro to R, is how to use the Internet and R-help to figure out how to do something you haven't done before in R. Hopefully we won't have Internet problems during the class.
+  - We are available to help you with any of this. If you get hopelessly lost with the class materials today, we can set up an in-person meeting this week or a Teams meeting after the DM training is over. Just reach out to us. The trainer emails will be in the class notes.
+
+## Goals for Today ---
+With this introduction to R we hope to give you a sense of how R works, so you have a starting point from which you can continue learning R on your own--if you want--from the Scientists' Training website or the many R tutorials that are available for free on the Internet. Try not to get frustrated if you don't understand everything today or if you can't get some code to work. R can be a bit difficult to learn, but if you keep at it you will find that it is an incredibly powerful programming language for cleaning and manipulating data, analyzing data, and producing really nice data visualizations.
+
+Note that there are many different ways to do the same thing in R. If we want to subset a large data set to just get the data for a particular park, one person might use R's subset() function to perform that task while another may use the filter() function to achieve the very same thing. Use the functions you are most comfortable with to do what you need with the data.
+
+From the pre-class videos you learned how to:
+  - navigate the RStudio interface
+  - install and load R packages
+
+By the end of this (very short) class you should be able to:
+  - create and save R projects and R scripts
+  - import a .csv file, perform basic data cleaning and manipulations, and export the CLEANED data as a .csv file
+  - create a plot in R and export it as an image file
+
+## Create an RStudio project ---
+** File > New Project > New Directory (and browse to location) -- project extension is .Rproj. You can also use the New File icon to create a new RStudio project.
+
+Why use an RStudio Project? We can create and run an R script without associating the script with an RStudio project. But with an RStudio project...
+  - All the files that you generate from your R script should be saved in the project folder or in a project subfolder. This is a good way to organize all your R scripts and outputs for a project. R will use the location of the RStudio project as your default working directory, whenever you're working in the project. ** Type 'getwd()' to see the working directory path for your RStudio project.
+- To open this project the next time you want to work in it, just double-click the .Rproj file and it will automatically open your project in RStudio and you'll see all your project-related files as well. [** SHOW that you just navigate to the folder on your computer]
+- If you want to share your project with a colleague, you can just zip the entire folder and send it. Your colleague can unzip the project folder and run the project scripts without having to set the R working directory because R will recognize the project location as the default working directory.
+
+## Coding in R ---
+Let's start with some coding in the RStudio console, and then we will switch to writing code in an RScript...
+
+As you learned in the pre-class video, when you type code in the console and then press enter, the code will execute immediately. 
+
+But before we start coding, two points:
+  - R IS CASE SENSITIVE
+  - It's a good idea to adopt a consistent, clean coding style for all your projects. Google has an R Style Guide that I like. It's a modification of the Tidyverse R Style Guide [** GOOGLE TO SHOW]
+
+Let's do some math in the R console
+  - ** Type '2 + 3' # notice you don't need to write the equal sign, just press Enter. The spacing is just for ease of reading. R is typically not space-sensitive [** SHOW '2+3']
+  - ** Type 'x <- 4' # If you want to assign a value to a variable in R, standard practice is to use this arrow assignment operator rather than the equal sign though both will work in most situations. The = operator is often used within function calls to define arguments. We'll demonstrate that use later. Notice that when you ran that line of code it didn't print any output in the console, it only assigned the number to the variable x and saved it in it memory. You can see that R now has this variable in its global environment. For the remainder of this R session, R will recognize x as equal to 4 [** SHOW 'x * 5', and it doesn't save to global environment] unless you overwrite it by assigning a different value to x or if you remove that variable from memory with the rm() function. 
+  - Let's calculate the mean of 4 numbers. ** Type 'mean_val <- (2 + 4 + 5 + 8)/4' # R respects order of operations, so you need to enclose the additions in parentheses to do that first before dividing by 4. Note that mean_val contains the outcome of the math equation, not the equation itself. To see the outcome of the equation, type the variable name in the console.
+  
+## R script ---
+We're going to switch now from typing R commands in the console to typing commands in an R Script. This will allow us to comment our code and save it as a reminder of what we learned in class today.
+
+An R script is just a text file where you can type R commands and descriptive comments. You can run commands from an R script, and you can also save the R script so you can re-run it later without having to type everything over again.
+  - Let's creat an R script that will be associated with this project. ** File > New File > R Script. OR.... use the shortcut icon
+  - In R scripts, use the hashtag to identify a comment. When executing code, R will ignore anything that starts with a hashtag. 
+  - I always start my R scripts with information about the purpose of the script.
+  - At the beginning of a script I will also clear the global environment and load any packages I will need. ** Type 'library(tidyverse)' in script. We won't be using the functions from this package yet, but let's go ahead and load it.
+  EXPLAIN HOW TO EXECUTE CODE LINES by putting your cursor on that line and press Enter, or highlight the code and press Enter (or push 'Run'--explain that 'Source' will run the entire script). Notice that when you load a package, you will see a checkmark to the left of it in the RStudio Packages tab.
+  - I also like to organize my script with collapsible sections for easier navigation. [** SHOW]
+  - Now use the 'save' icon to save the script in your project working directory. You can also use File > Save As to save the script somewhere else on your computer.
+
+## Working with Vectors ---
+So far we have only assigned values to variables. In R, the variable is considered a vector of length 1. A vector is the the most basic data structure in R. You can think of a vector as a sequence of values that have the same data class, e.g., a collection of numbers or a collection of character strings.
+
+  - Create a vector of 4 numbers in your script: ** Type 'x <- c(2, 4, 5, 8)' and run it. You'll see in the global environment that R now recognizes the variable 'x' as a vector of four items with a numeric data class. Notice we had to wrap the four numbers in--c-parentheses--to create the vector. c() is an R function for combining values to create a vector. [** In console, SHOW what happens without c()]. We'll talk more about functions in a bit.
+  
+  When you have a vector of many numbers, you can perform math calculations on them the same way you did when x was a single number. ** Type 'x * 3`. This can be useful if, for example, you need to convert a vector of fish lengths in inches to fish lengths in cm.
+  
+  Let's learn some R functions commonly used with vectors: ** Type...
+  - 'class(x)' to show the data class. Other data classes in R include character data class for string text and logical for TRUE/FALSE values.
+  - What if I want to see how long this vector is? I can look in the global environment, but R also has a base R function for this task. What might I google to find the answer to this question? ** GOOGLE 'r how do i find the number of values in a vector' Answer is 'length(x)'
+  
+  Going off on a long tangent to explain functions b/c functions are super important in R...
+  
+  If I type '?length' in the console, R-help will open the documentation that describes this function. In R, question-mark-function-name is an easy way to find the help files for an R function. We see this is a function in base R. That means it's part of the collection of functions automatically provided with an R installation, and it automatically loads up when you open RStudio. If the function is part of an R package that you installed, you would see the package name in the squigglies. The help file explains what this function does. R help files are generally difficult to understand, so don't worry if this looks unintelligible to you. I often do Google searches to get with with R, instead of using R help files.
+  
+  So what exactly is a function in R? You can think of a function as a sequence of R commands that typically accepts input values, runs a sequence of pre-written R commands on those input values, then produces some output--in this case it accepts a vector as input and the output it gives you is the number of values in that vector. Functions make life easier for R-users because it means that we don't always have to write all the code ourselves from scratch. R packages are mostly compilations of functions and example datasets that someone has written for a certain purpose. For example, the package ggplot2 has a collection of functions that make it easier for a user to create pretty plots from data. - We will talk more about R packages later.
+  
+  In R, functions are always called by typing the function name and then a set of parentheses--usually you'll have to provide input arguments in the parentheses, like we did for the length() function. It's bad coding practice to use function names as variable names so try to avoid it. For example, don't create a variable called length and assign values to it.
+  
+  You can create your own function in R and then call your custom function every time you need to perform that task in R. We don't have time to go over it today, but it's explained in detail in the Scientists Training website.
+  
+  Now back to the vector we created...
+
+CHALLENGE >>>>> With the help of the Internet, figure out how to find the minimum value, mean value, and standard deviation of your vector of numbers...just like we did to find the length() function... figure out the R functions to use, run those functions on your vector and see what the output is. 
+
+ANSWER >>>>> min(x); mean(x); sd(x). You can see that applying the mean function to your vector of numbers is easier than calculating the mean by yourself.
+
+Now replace the 5 in your x-vector with NA, which as a reserved word in R, that stands for missing value. Reserved words cannot be used as variable names in R. ** Type 'x <- c(2, 4, NA, 8); then 'mean(x)'. R returns NA as the mean of the vector. 
+
+CHALLENGE >>>>> Use the Internet to figure out how to find the mean of a vector that includes missing values. ** GOOGLE 'r find mean of a vector that has missing values'. Type 'mean(x, na.rm = TRUE)` You could also have typed ?mean in the R console, if you're pretty good at reading R help files.
+
+When you have missing values in your data, you should always pay attention to how an R function is treating the missing values in your data to ensure it's not doing something different than what you want or expect. ** Type 'length(x)'-- the NA is counted as a value when the function calculates the length of the vector.
+
+## Data frames ---
+Another important data structure in R--and probably the one you will use most often--is the data frame. The data frame is a tabular data structure that can be composed of many columns, each of which is essentially a vector with an associated data class. When you import a .csv file into R, it is by default imported as a data frame.
+
+We're going to import the park_visits .csv file and examine the data in R.
+
+BRIEFLY EXPLAIN THE PARK_VISITS DATA SET
+** (Files tab) click the file you want, then Import Dataset (default will be as a data frame) Gives you a preview of your data, its guesses on the data type for each column, default data frame name it will import as, and the actual R code used to import the file with the selections shown here. For our demo we will just change the name to 'dat' and then import with the rest of the default settings. R will import the data, save it as a data frame named 'dat', and in the console it will show you the code. The import function also automatically calls the View() function to disply the data as a tab in the RStudio source pane.
+
+In the global environment you'll see the data frame you just imported. If you click the blue triangle to the left the entry will expand and you can see information about data types of the columns in the data frame. 
+  - Notice that the year column has been imported as a character data type--this suggests there are some entries in this column that are not numeric
+
+Because each column of a data frame is considered a vector, you can also use the class() function to find the data type for a column of a data frame. ** Type 'class(dat$year)' -- The dollar sign followed by column name is one way to access a single column of a data frame.
+
+When I first import a data frame I always examine the data in the View tab first.
+  - ** SHOW sort and filter in View tab.
+
+Let's learn some R functions commonly used with data frames: ** Type...
+  - 'summary(dat)' to show summary information for each column. The summary information is not very interesting for the character data classes, but the visitors column is a numeric data class and the summary() function shows us the minimum, maximum, and some other useful information for this column of data.
+  - 'table(dat$region)'
+  - 'unique(dat$year)' # see something funny in there
+
+## Clean/manipulate the parks data ---
+Now we are going to start using functions from the tidyverse package to manipulate and plot the parks data. 
+
+The 'tidyverse' package is really a collection of R packages created to simplify data science tasks. One of those R packages installed with tidyverse is 'dplyr'. Let's look at the documentation for this package to see what this package is all about. ** Packages > search 'dplyr' > User guides, vignettes...
+
+Listed under the user guides/vignettes is all the functions and example datasets that come with the package. If you click on one you will see the help file for that specific function. But again, R help files are often difficult to understand. I find that running the examples at the bottom of a function help file can sometimes be useful.
+
+If we had more time I would go into depth about the tidyverse packages. In particular, the dplyr and ggplot2 packages that are installed with tidyverse are incredibly useful for manipulating and plotting data, respectively.
+
+Don't worry if you get a bit lost from this point on, I really just want to give you an idea of how to use some of the functions in these two packages. The Scientists Training goes into great detail on using dplyr and ggplot2 in R.
+
+Our goal is to extract a subset of the parks data and manipulate it so we can create this plot in R [** SHOW and explain plot]. This plot shows the number of park visitors per year in national parks from the Midwest region. 
+
+Let's first reduce the data frame to only include a few columns and one region. 
+Check the names of the data columns. We only want to use a subset of columns: year, region, parkname, unit_type, visitors.
+
+What are the unique values in the 'region' column and how many data records do we have for each region?
+** Type 'table(dat$region)' # Let's use data from MW region
+
+[HERE IS THE CODE I WILL DEMO USING DPLYR AND GGPLOT2...I KNOW IT'S PROBABLY TOO MUCH TO THROW ALL AT ONCE... I HAVEN'T YET FIGURED OUT HOW I WILL EXPLAIN IT]
+
+# CLEAN & MANIPULATE THE DATA, USING DPLYR FUNCTIONS
+subdat <- dat %>%
+  dplyr::filter(region == "MW" & year != "Total") %>% 
+  dplyr::select(year, unit_code, unit_name, visitors) %>%
+  dplyr::mutate(
+    year = as.integer(year),
+    visitors_1000 = visitors/1000) %>%
+  dplyr::arrange(unit_code, year) # sort data by unit_code, then by year
+
+# CREATE BASIC PLOTS, USING BASE R PLOT FUNCTIONS
+hist(subdat$visitors_1000)
+boxplot(visitors_1000 ~ unit_code, data = subdat)
+
+# CREATE A LINE GRAPH, USING GGPLOT
+visitors_plot <- ggplot(subdat, aes(x = year, y = visitors_1000, colour = unit_code)) + 
+  geom_line() +
+  labs(title = "Annual number of visitors to National Parks in Midwest Region", x = "Year", y = "Visitors (1000's)") +
+  theme_bw()
